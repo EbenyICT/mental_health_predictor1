@@ -77,7 +77,13 @@ for val, enc in zip(input_data, encoders):
 
 # Final input vector
 final_input = [age] + encoded
+
+# ✅ Debug: Show length of input vector
+st.write("🧪 Feature vector length:", len(final_input))  # Should be 22
+
+# Scale the input
 final_input_np = scaler.transform([final_input])
+
 
 # Prediction
 if st.button("Predict"):
