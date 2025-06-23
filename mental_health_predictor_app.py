@@ -3,6 +3,7 @@
 import streamlit as st
 import numpy as np
 import pickle
+from sklearn.preprocessing import LabelEncoder
 
 # Load model and scaler
 with open('mental_health_predictor.pkl', 'rb') as f:
@@ -20,6 +21,7 @@ Enter the required details below and click **Predict** to see if the person is l
 # Input form
 gender = st.selectbox("Gender", ["Male", "Female", "Other"])
 age = st.slider("Age", 18, 65, 30)
+country = st.selectbox("Country", ["United States", "United Kingdom", "Canada", "Germany", "India", "Nigeria", "Others"])
 self_employed = st.selectbox("Are you self-employed?", ["Yes", "No"])
 family_history = st.selectbox("Family history of mental illness?", ["Yes", "No"])
 work_interfere = st.selectbox("How often does mental health interfere with work?", ["Never", "Rarely", "Sometimes", "Often"])
@@ -42,34 +44,36 @@ mental_vs_physical = st.selectbox("Is mental health as important as physical hea
 obs_consequence = st.selectbox("Have you observed consequences of mental health issues at work?", ["Yes", "No"])
 
 # Encode inputs
-input_data = [gender, self_employed, family_history, work_interfere, no_employees, remote_work, tech_company,
+input_data = [gender, country, self_employed, family_history, work_interfere, no_employees, remote_work, tech_company,
               benefits, care_options, wellness_program, seek_help, anonymity, leave, mental_health_consequence,
               phys_health_consequence, coworkers, supervisor, mental_health_interview, phys_health_interview,
               mental_vs_physical, obs_consequence]
 
 # Convert to numerical values using same order as LabelEncoder() earlier
-from sklearn.preprocessing import LabelEncoder
-encoders = [LabelEncoder().fit(["Male", "Female", "Other"]),
-            LabelEncoder().fit(["Yes", "No"]),
-            LabelEncoder().fit(["Yes", "No"]),
-            LabelEncoder().fit(["Never", "Rarely", "Sometimes", "Often"]),
-            LabelEncoder().fit(["1-5", "6-25", "26-100", "100-500", "500-1000", "More than 1000"]),
-            LabelEncoder().fit(["Yes", "No"]),
-            LabelEncoder().fit(["Yes", "No"]),
-            LabelEncoder().fit(["Yes", "No", "Don't know"]),
-            LabelEncoder().fit(["Yes", "No", "Not sure"]),
-            LabelEncoder().fit(["Yes", "No", "Don't know"]),
-            LabelEncoder().fit(["Yes", "No", "Don't know"]),
-            LabelEncoder().fit(["Yes", "No", "Don't know"]),
-            LabelEncoder().fit(["Very easy", "Somewhat easy", "Don't know", "Somewhat difficult", "Very difficult"]),
-            LabelEncoder().fit(["Yes", "No", "Maybe"]),
-            LabelEncoder().fit(["Yes", "No", "Maybe"]),
-            LabelEncoder().fit(["Yes", "No", "Some of them"]),
-            LabelEncoder().fit(["Yes", "No", "Some of them"]),
-            LabelEncoder().fit(["Yes", "No", "Maybe"]),
-            LabelEncoder().fit(["Yes", "No", "Maybe"]),
-            LabelEncoder().fit(["Yes", "No", "Don't know"]),
-            LabelEncoder().fit(["Yes", "No"])]
+encoders = [
+    LabelEncoder().fit(["Male", "Female", "Other"]),
+    LabelEncoder().fit(["United States", "United Kingdom", "Canada", "Germany", "India", "Nigeria", "Others"]),
+    LabelEncoder().fit(["Yes", "No"]),
+    LabelEncoder().fit(["Yes", "No"]),
+    LabelEncoder().fit(["Never", "Rarely", "Sometimes", "Often"]),
+    LabelEncoder().fit(["1-5", "6-25", "26-100", "100-500", "500-1000", "More than 1000"]),
+    LabelEncoder().fit(["Yes", "No"]),
+    LabelEncoder().fit(["Yes", "No"]),
+    LabelEncoder().fit(["Yes", "No", "Don't know"]),
+    LabelEncoder().fit(["Yes", "No", "Not sure"]),
+    LabelEncoder().fit(["Yes", "No", "Don't know"]),
+    LabelEncoder().fit(["Yes", "No", "Don't know"]),
+    LabelEncoder().fit(["Yes", "No", "Don't know"]),
+    LabelEncoder().fit(["Very easy", "Somewhat easy", "Don't know", "Somewhat difficult", "Very difficult"]),
+    LabelEncoder().fit(["Yes", "No", "Maybe"]),
+    LabelEncoder().fit(["Yes", "No", "Maybe"]),
+    LabelEncoder().fit(["Yes", "No", "Some of them"]),
+    LabelEncoder().fit(["Yes", "No", "Some of them"]),
+    LabelEncoder().fit(["Yes", "No", "Maybe"]),
+    LabelEncoder().fit(["Yes", "No", "Maybe"]),
+    LabelEncoder().fit(["Yes", "No", "Don't know"]),
+    LabelEncoder().fit(["Yes", "No"])
+]
 
 encoded = []
 for val, enc in zip(input_data, encoders):
@@ -79,11 +83,10 @@ for val, enc in zip(input_data, encoders):
 final_input = [age] + encoded
 
 # ✅ Debug: Show length of input vector
-st.write("🧪 Feature vector length:", len(final_input))  # Should be 22
+st.write("🧪 Feature vector length:", len(final_input))  # Should be 23
 
 # Scale the input
 final_input_np = scaler.transform([final_input])
-
 
 # Prediction
 if st.button("Predict"):
