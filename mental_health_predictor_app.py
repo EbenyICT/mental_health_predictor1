@@ -15,7 +15,7 @@ with open('scaler.pkl', 'rb') as f:
 st.title("🧠 Mental Health Disorder Risk Predictor")
 
 st.markdown("""
-Enter the required details below and click **Predict** to see if the person is likely to need mental health treatment.
+Enter the required details below and click **Predict** to see if you are likely to need mental health treatment.
 """)
 
 # Input form
@@ -92,6 +92,7 @@ final_input_np = scaler.transform([final_input])
 if st.button("Predict"):
     prediction = model.predict(final_input_np)
     if prediction[0] == 1:
-        st.error("⚠️ Likely needs mental health treatment.")
+        st.error("⚠️ Likely needs mental health treatment. Contact an approved mental hospital nearest to you")
     else:
         st.success("✅ Unlikely to need mental health treatment.")
+
