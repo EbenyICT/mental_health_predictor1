@@ -92,7 +92,8 @@ final_input_np = scaler.transform([final_input])
 if st.button("Predict"):
     prediction = model.predict(final_input_np)
     if prediction[0] == 1:
-        st.error("⚠️ Likely needs mental health treatment. Contact an approved mental hospital nearest to you")
+        st.error("⚠️ You likely need mental health treatment. Contact an approved mental health hospital nearest to you")
     else:
         st.success("✅ Unlikely to need mental health treatment.")
+
 
